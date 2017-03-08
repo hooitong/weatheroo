@@ -24,6 +24,11 @@
     <!--or something similar.-->
     <string name="app_name">Weatheroo</string>
 
+    <!-- Used in Main Menu -->
+    <string name="action_refresh">Refresh</string>
+
+    <!-- Error Messages -->
+    <string name="error_load_fail">Fail to retrieve weather data, please try again.</string>
 
     <!-- - - - - - - - - - - - - -->
     <!--Used by SunshineDateUtils-->
