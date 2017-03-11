@@ -1,5 +1,6 @@
 package co.realityshifters.weatheroo;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.net.URL;
 
@@ -74,7 +74,10 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onForecastClick(String weather) {
-        Toast.makeText(this, weather, Toast.LENGTH_SHORT).show();
+        Intent detailIntent = new Intent(this, DetailActivity.class);
+        detailIntent.putExtra(Intent.EXTRA_TEXT, weather);
+        startActivity(detailIntent);
+
     }
 
     private void showWeatherDataView() {

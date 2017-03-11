@@ -27,6 +27,9 @@
     <!-- Used in Main Menu -->
     <string name="action_refresh">Refresh</string>
 
+    <!-- Used in Details Menu -->
+    <string name='action_share_weather'>Share</string>
+
     <!-- Error Messages -->
     <string name="error_load_fail">Fail to retrieve weather data, please try again.</string>
 
