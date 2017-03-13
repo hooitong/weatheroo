@@ -1,6 +1,10 @@
 package co.realityshifters.weatheroo.data;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.support.v7.preference.PreferenceManager;
+
+import co.realityshifters.weatheroo.R;
 
 public class SunshinePreferences {
 
@@ -72,8 +76,11 @@ public class SunshinePreferences {
      * "94043,USA" if SharedPreferences have not been implemented yet.
      */
     public static String getPreferredWeatherLocation(Context context) {
-        /** This will be implemented in a future lesson **/
-        return getDefaultWeatherLocation();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
+                context);
+        String locationKey = context.getString(R.string.pref_location_key);
+        String locationDefault = context.getString(R.string.pref_location_default);
+        return sharedPreferences.getString(locationKey, locationDefault);
     }
 
     /**
@@ -83,8 +90,21 @@ public class SunshinePreferences {
      * @return true If metric display should be used
      */
     public static boolean isMetric(Context context) {
-        /** This will be implemented in a future lesson **/
-        return true;
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
+                context);
+        String unitsKey = context.getString(R.string.pref_units_key);
+        String unitsDefault = context.getString(R.string.pref_units_value_celsius);
+        String preferredUnits = sharedPreferences.getString(unitsKey, unitsDefault);
+        final String celciusValue = context.getString(R.string.pref_units_value_celsius);
+        final String fahrenheitValue = context.getString(R.string.pref_units_value_fahrenheit);
+
+        if (preferredUnits.equals(celciusValue)) {
+            return true;
+        } else if (preferredUnits.equals(fahrenheitValue)) {
+            return false;
+        } else {
+            return false;
+        }
     }
 
     /**

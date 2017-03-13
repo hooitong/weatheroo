@@ -1,13 +1,17 @@
 package co.realityshifters.weatheroo;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,8 +26,10 @@ import co.realityshifters.weatheroo.utilities.NetworkUtils;
 import co.realityshifters.weatheroo.utilities.OpenWeatherJsonUtils;
 
 public class MainActivity extends AppCompatActivity implements
-        ForecastAdapter.ForecastClickListener, LoaderManager.LoaderCallbacks<String[]> {
+        ForecastAdapter.ForecastClickListener, LoaderManager.LoaderCallbacks<String[]>,
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
+    private static final String TAG = "MainActivity";
     private static final int FORECAST_LOADER_ID = 22;
     private static final String LOCATION_QUERY_EXTRA = "query";
 
@@ -32,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private RecyclerView mRecyclerView;
     private ForecastAdapter mForecastAdapter;
+
+    private static boolean PREFERENCE_UPDATED = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +60,27 @@ public class MainActivity extends AppCompatActivity implements
         mProgressBar = (ProgressBar) findViewById(R.id.pg_loading_progress);
 
         getSupportLoaderManager().initLoader(FORECAST_LOADER_ID, null, this);
+
+        PreferenceManager
+                .getDefaultSharedPreferences(this)
+                .registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (PREFERENCE_UPDATED) {
+            getSupportLoaderManager().restartLoader(FORECAST_LOADER_ID, null, this);
+            PREFERENCE_UPDATED = false;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PreferenceManager
+                .getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -68,8 +97,33 @@ public class MainActivity extends AppCompatActivity implements
                 mForecastAdapter.setWeatherData(null);
                 getSupportLoaderManager().restartLoader(FORECAST_LOADER_ID, null, this);
                 return true;
+            case R.id.action_settings:
+                Intent startSettingsActivity = new Intent(this, SettingsActivity.class);
+                startActivity(startSettingsActivity);
+                return true;
+            case R.id.action_map:
+                openLocationInMap();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void openLocationInMap() {
+        String locationKey = getString(R.string.pref_location_key);
+        String locationDefault = getString(R.string.pref_location_default);
+        String addressString = PreferenceManager
+                .getDefaultSharedPreferences(this)
+                .getString(locationKey, locationDefault);
+        Uri geoLocation = Uri.parse("geo:0,0?q=" + addressString);
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(geoLocation);
+
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        } else {
+            Log.d(TAG, "Couldn't open " + geoLocation.toString() + ".");
         }
     }
 
@@ -145,5 +199,10 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onLoaderReset(Loader<String[]> loader) {
 
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        PREFERENCE_UPDATED = true;
     }
 }
