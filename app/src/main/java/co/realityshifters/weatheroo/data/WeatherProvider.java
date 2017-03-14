@@ -74,7 +74,7 @@ public class WeatherProvider extends ContentProvider {
             @Nullable String[] selectionArgs, @Nullable String sortOrder) {
         SQLiteDatabase db = mOpenHelper.getReadableDatabase();
 
-        Cursor retCursor = null;
+        Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
             case CODE_WEATHER:
                 retCursor = db.query(WeatherContract.WeatherEntry.TABLE_NAME,
@@ -108,7 +108,7 @@ public class WeatherProvider extends ContentProvider {
             @Nullable String[] selectionArgs) {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
-        int rowsDeleted = 0;
+        int rowsDeleted;
         switch (sUriMatcher.match(uri)) {
             case CODE_WEATHER:
                 rowsDeleted = db.delete(
