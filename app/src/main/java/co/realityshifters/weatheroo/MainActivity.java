@@ -29,15 +29,15 @@ public class MainActivity extends AppCompatActivity implements
         ForecastAdapter.ForecastClickListener, LoaderManager.LoaderCallbacks<String[]>,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static final String TAG = "MainActivity";
-    private static final int FORECAST_LOADER_ID = 22;
-    private static final String LOCATION_QUERY_EXTRA = "query";
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private TextView mErrorMessage;
     private ProgressBar mProgressBar;
 
     private RecyclerView mRecyclerView;
     private ForecastAdapter mForecastAdapter;
+
+    private static final int FORECAST_LOADER_ID = 22;
 
     private static boolean PREFERENCE_UPDATED = false;
 
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_refresh:
-                mForecastAdapter.setWeatherData(null);
+                invalidateData();
                 getSupportLoaderManager().restartLoader(FORECAST_LOADER_ID, null, this);
                 return true;
             case R.id.action_settings:
@@ -110,11 +110,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void openLocationInMap() {
-        String locationKey = getString(R.string.pref_location_key);
-        String locationDefault = getString(R.string.pref_location_default);
-        String addressString = PreferenceManager
-                .getDefaultSharedPreferences(this)
-                .getString(locationKey, locationDefault);
+        String addressString = SunshinePreferences.getPreferredWeatherLocation(this);
         Uri geoLocation = Uri.parse("geo:0,0?q=" + addressString);
 
         Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -162,9 +158,7 @@ public class MainActivity extends AppCompatActivity implements
 
             @Override
             public String[] loadInBackground() {
-                String locationQuery = SunshinePreferences.getPreferredWeatherLocation(
-                        MainActivity.this);
-                URL weatherRequest = NetworkUtils.buildUrl(locationQuery);
+                URL weatherRequest = NetworkUtils.getUrl(MainActivity.this);
 
                 try {
                     String response = NetworkUtils.getResponseFromHttpUrl(weatherRequest);
@@ -199,6 +193,10 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onLoaderReset(Loader<String[]> loader) {
 
+    }
+
+    private void invalidateData() {
+        mForecastAdapter.setWeatherData(null);
     }
 
     @Override

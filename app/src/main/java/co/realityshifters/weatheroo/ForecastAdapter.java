@@ -22,7 +22,6 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
         mClickListener = listener;
     }
 
-
     @Override
     public ForecastViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
@@ -62,7 +61,9 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
 
         @Override
         public void onClick(View v) {
-            mClickListener.onForecastClick(mWeatherTextView.getText().toString());
+            int adapterPosition = getAdapterPosition();
+            String weatherForDay = mWeatherData[adapterPosition];
+            mClickListener.onForecastClick(weatherForDay);
         }
     }
 }
