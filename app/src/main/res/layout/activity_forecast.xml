@@ -7,12 +7,14 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_forecast"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="8dp" />
 
     <ProgressBar
         android:id="@+id/pg_loading_progress"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
         android:layout_gravity="center"
         android:visibility="invisible" />
 
@@ -20,7 +22,9 @@
         android:id="@+id/tv_error_message"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:padding="16dp"
         android:text="@string/error_load_fail"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:visibility="invisible" />
 
 </FrameLayout>

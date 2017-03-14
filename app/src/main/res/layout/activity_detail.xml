@@ -4,11 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="8dp"
     tools:context="co.realityshifters.weatheroo.DetailActivity">
 
     <TextView
         android:id="@+id/tv_weather_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp" />
+        android:textSize="22sp"
+        tools:text="Saturday, October 1 - Sunny - 78° / 63°" />
+    
 </LinearLayout>
